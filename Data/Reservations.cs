@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlazorHybridApp.Data
 {
-    public class Reservations
+    internal class Reservation
     {
         //Private data
         private string rcode = String.Empty;
@@ -16,5 +16,35 @@ namespace BlazorHybridApp.Data
         private string cname = String.Empty;
         private string citizenship = String.Empty;
         private bool status;
+
+        //Public data
+        public string Rcode { get { return rcode; } set { rcode = value; } }
+        public string Fcode { get { return fcode; } set { fcode = value; } }
+        public string Aname { get { return aname; } set { aname = value; } }
+        public double Cost { get { return cost; } set { cost = value; } }
+        public string Cname { get { return cname; } set { cname = value; } }
+        public string Citizenship { get { return citizenship; } set { citizenship = value; } }
+        public bool Status { get { return status; } set { status = value; } }
+
+        public Reservation(string rc, string fc, string an, double c, string cn, string cz, bool st)
+        {
+            Rcode = rc;
+            Fcode = fc;
+            Aname = an;
+            Cost = c;
+            Cname = cn;
+            Citizenship = cz;
+            Status = st;
+        }
+        public override string ToString()
+        {
+            return $"{Rcode}\n" +
+            $"{Fcode}\n" +
+            $"{Aname}\n" +
+            $"{Cost}\n" +
+            $"{Cname}\n" +
+            $"{Citizenship}\n" +
+            $"{Status}";
+        }
     }
 }

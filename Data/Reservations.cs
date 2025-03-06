@@ -26,7 +26,7 @@ namespace BlazorHybridApp.Data
         public string Citizenship { get { return citizenship; } set { citizenship = value; } }
         public bool Status { get { return status; } set { status = value; } }
 
-        public Reservation(string rc, string fc, string an, double c, string cn, string cz, bool st)
+        public Reservation(string rc, string fc, string an, double c, string cn, string cz, string st)
         {
             Rcode = rc;
             Fcode = fc;
@@ -34,7 +34,14 @@ namespace BlazorHybridApp.Data
             Cost = c;
             Cname = cn;
             Citizenship = cz;
-            Status = st;
+            if (st == "Active")
+            {
+                Status = true;
+            }
+            else if (st == "Inactive")
+            {
+                Status = false;
+            }
         }
         public override string ToString()
         {
@@ -44,7 +51,7 @@ namespace BlazorHybridApp.Data
             $"{Cost}\n" +
             $"{Cname}\n" +
             $"{Citizenship}\n" +
-            $"{Status}";
+            $"{Status}\n";
         }
     }
 }

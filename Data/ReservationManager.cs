@@ -9,22 +9,41 @@ namespace BlazorHybridApp.Data
 {
     internal class ReservationManager
     {
-        private static string PATH = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\Resources\Res\test.txt");
+        private static string BINPATH = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\Resources\Res\reservations_data.bin");
+        private static string TESTPATH = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\Resources\Res\reservations_data.txt");
+        private static string RESPATH = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\Resources\Res\test.txt");
         private const char sep = ';';
         public static List<Reservation> FindReservations()
         {
-            StreamReader reader = new StreamReader(PATH);
-            string line;
-            string[] fields;
             List<Reservation> reservals = new List<Reservation>();
-            while(!reader.EndOfStream)
+            string[] filecontent = File.ReadAllLines(RESPATH);
+            int ind = 0;
+            string[] fields = [];
+            foreach (string line in filecontent)
             {
-                line = reader.ReadLine();
-                fields = line.Split(sep);
-                Reservation reservation = new Reservation(fields[0], fields[1], fields[2], Convert.ToDouble(fields[3]), fields[4], fields[5], Convert.ToBoolean(fields[6]));
+                fields = filecontent[ind].Split(sep);
+                ind++;
+                Reservation reservation = new Reservation(fields[0], fields[1], fields[2], Convert.ToDouble(fields[3]), fields[4], fields[5], fields[6]);
                 reservals.Add(reservation);
             }
             return reservals;
+        }
+        public static void WriteToBinary()
+        {
+            using(BinaryWriter writer = new BinaryWriter(File.Open(BINPATH, FileMode.Create)))
+            {
+                foreach (Reservation res in ReservationManager.FindReservations()) 
+                {
+                    writer.Write(res.ToString());
+                };
+            }
+            using (StreamWriter writer = new StreamWriter(File.Open(TESTPATH, FileMode.Create)))
+            {
+                foreach (Reservation res in ReservationManager.FindReservations())
+                {
+                    writer.Write($"{res.Rcode};{res.Fcode};{res.Aname};{res.Cost};{res.Cname};{res.Citizenship};{res.Status}\n");
+                };
+            }
         }
     }
 }

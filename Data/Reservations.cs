@@ -15,7 +15,7 @@ namespace BlazorHybridApp.Data
         private double cost;
         private string cname = String.Empty;
         private string citizenship = String.Empty;
-        private bool status;
+        private string status = String.Empty;
 
         //Public data
         public string Rcode { get { return rcode; } set { rcode = value; } }
@@ -24,10 +24,10 @@ namespace BlazorHybridApp.Data
         public double Cost { get { return cost; } set { cost = value; } }
         public string Cname { get { return cname; } set { cname = value; } }
         public string Citizenship { get { return citizenship; } set { citizenship = value; } }
-        public bool Status { get { return status; } set { status = value; } }
+        public string Status { get { return status; } set { status = value; } }
 
         public Reservation() { }
-        public Reservation(string rc, string fc, string an, double c, string cn, string cz, string st)
+        public Reservation(string rc, string fc, string an, double c, string cn, string cz, bool st)
         {
             Rcode = rc;
             Fcode = fc;
@@ -35,13 +35,13 @@ namespace BlazorHybridApp.Data
             Cost = c;
             Cname = cn;
             Citizenship = cz;
-            if (st == "Active")
+            if (st == true)
             {
-                Status = true;
+                Status = "Active";
             }
-            else if (st == "Inactive")
+            else if (st == false)
             {
-                Status = false;
+                Status = "Inactive";
             }
         }
         public override string ToString()

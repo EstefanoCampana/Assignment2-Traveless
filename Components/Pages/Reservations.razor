@@ -1,7 +1,6 @@
 ﻿@page "/reservations"
 @using BlazorHybridApp.Data
 
-
 <h1 class="text-center">Reservations Finder</h1>
 <div class="d-flex justify-content-between">
 	<h3>Code</h3>
@@ -10,23 +9,23 @@
 	<input placeholder="Any" />
 	<h3>Name</h3>
 	<input placeholder="Any" />
-	<button onclick="ReservationFinder">Find Reservations...</button>
+	<button onclick="FindReservations">Find Reservations...</button>
 </div>
 <h1 class="text-center">Reservations</h1>
 <div class="d-flex justify-content-center">
 	<p></p>
 </div>
-<h1 class="text-center">Reserve</h1>
 
+<h1 class="text-center">Reserve</h1>
 <div class="d-block">
 	<h3>Reservation Code</h3>
-	<p>@reservation.Rcode</p>
+	<input disabled placeholder="Reservation Code" @bind=reservation.Rcode/>
 	<h3>Flight Code</h3>
-	<p>@reservation.Fcode</p>
+	<input disabled placeholder="Flight Code" @bind=reservation.Fcode/>
 	<h3>Airline</h3>
-	<p>@reservation.Aname</p>
+	<input disabled placeholder="Airline" @bind=reservation.Aname/>
 	<h3>Cost</h3>
-	<p>@reservation.Cost</p>
+	<input disabled placeholder="Cost" @bind=reservation.Cost/>
 	<h3>Name</h3>
 	<input placeholder="Name" @bind=reservation.Cname/>
 	<h3>Citizenship</h3>
@@ -40,8 +39,28 @@
 </div>
 @code{
 	Reservation reservation = new Reservation();
+	string errorMessage = String.Empty;
 	private void Update()
 	{
-		reservation = ReservationManager.FindReservations()[0];
+		List<Reservation> updateList = ReservationManager.FindReservations();
+		reservation = updateList[1];
+		try
+		{
+			if(String.IsNullOrEmpty(reservation.Cname) ||
+				String.IsNullOrEmpty(reservation.Citizenship) ||
+				String.IsNullOrEmpty(reservation.Status))
+			{
+				errorMessage = "Please fill all the entries";
+			}
+			else
+			{
+				errorMessage = String.Empty;
+				ReservationManager.WriteToJson();
+			}
+		}
+		catch (FormatException ex)
+		{
+			errorMessage = ex.Message;
+		}
 	}
 }

@@ -26,6 +26,7 @@ namespace BlazorHybridApp.Data
         public string Citizenship { get { return citizenship; } set { citizenship = value; } }
         public bool Status { get { return status; } set { status = value; } }
 
+        public Reservation() { }
         public Reservation(string rc, string fc, string an, double c, string cn, string cz, string st)
         {
             Rcode = rc;

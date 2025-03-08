@@ -1,16 +1,139 @@
 ﻿@page "/flights"
-<h3>Flight Finder</h3>
-<div class="d-flex justify-content-between">
-	<label>From:</label>
-	<input placeholder="Any" />
-	<label>To:</label>
-	<input placeholder="Any" />
-	<label>Day:</label>
-	<input placeholder="Any" />
-	<button onclick="Flights Finder">Find flights</button>
+<h3 class="text-center">Flight Finder</h3>
+<div class="d-flex gap-2">
+    <div class="d-flex flex-column w-100">
+        <label for="from">From:</label>
+        <input id="from" @bind="from" placeholder="Any" class="form-control h-100"/>
+    </div>
+    <div class="d-flex flex-column w-100">
+        <label for="to">To:</label>
+        <input id="to" @bind="to" placeholder="Any" class="form-control h-100" />
+    </div>
+    <div class="d-flex flex-column w-100">
+        <label for="day">Day:</label>
+        <input id="day" @bind="day" placeholder="Any" class="form-control h-100"  />
+    </div>
+    <div class="d-flex flex-column w-100">
+        <label>&nbsp;</label> 
+        <button @onclick="SearchFlights" class="btn btn-primary w-100 h-100">Find flights</button>
+    </div>
 </div> 
-<h3>Flights</h3>
-<PageTitle>gggg </PageTitle>
+
+<br />
+<div>
+    <h3 class="text-center">Flights</h3>
+    <div class="border rounded">
+        @if (flightsFound == null || !flightsFound.Any())
+        {
+            <p> Loading...</p>
+        }
+        else
+        {
+            <div>
+                @foreach (var flight in flightsFound)
+                {
+                    @flight  
+                }
+            </div>
+        }
+    </div>
+</div>
+
+<br />
+<h3 class="text-center">Reserve </h3>
+<form>
+    <div>
+        <label>Flight Code:</label>
+        <input id=" flight" type="text" class="form-control" placeholder="Flight">
+    </div>
+    <div>
+        <label>Airline:</label>
+        <input id ="airline" type="text" class="form-control" placeholder="Airline">
+    </div>
+    <div>
+        <label>Day:</label>
+        <input id="day" type="text" class="form-control" placeholder="Day">
+    </div>
+    <div>
+        <label>Time:</label>
+        <input id="time" type="text" class="form-control" placeholder="Time">
+    </div>
+    <div>
+        <label>Cost:</label>
+        <input id="cost" type="text" class="form-control" value="0">
+    </div>
+    <div>
+        <label>Name:</label>
+        <input id="name" type="text" class="form-control" placeholder="Name">
+    </div>
+    <div>
+        <label>Citizenship:</label>
+        <input id="citizenship" type="text" class="form-control" placeholder="Citizenship">
+    </div>
+    <br />
+    <button class="btn btn-primary">Reserve</button> 
+</form>
+
 @code {
 
+    public string flight;
+    public string airline;
+    public string time;
+    public string cost;
+    public string name;
+    public string citizenship;
+    public string from;
+    public string to;
+    public string day;
+    public List<string> flightsFound = new List<string>();
+
+    public class Flight
+    {
+        public string FlightCode { get; set; }
+        public string Airline { get; set; }
+        public string From { get; set; }
+        public string To { get; set; }
+        public string Day { get; set; }
+        public string Time { get; set; }
+        public string AvailableSeats { get; set; }
+        public string Price { get; set; }
+
+        public Flight(string[] data)
+        {
+            FlightCode = data[0].Trim();
+            Airline = data[1].Trim();
+            From = data[2].Trim();
+            To = data[3].Trim();
+            Day = data[4].Trim();
+            Time = data[5].Trim();
+            AvailableSeats = data[6].Trim();
+            Price = data[7].Trim();
+        }
+    }
+
+    private async Task SearchFlights()
+    {
+        flightsFound.Clear();
+
+        var lines = await File.ReadAllLinesAsync("Res/flights.csv");
+
+        foreach (var line in lines)
+        {
+            if (string.IsNullOrWhiteSpace(line)) continue; 
+
+            var flightData = line.Split(',');
+
+            if (flightData.Length == 8)
+            {
+                var flight = new Flight(flightData);
+
+                if ((string.IsNullOrWhiteSpace(from) || flight.From.Equals(from, StringComparison.OrdinalIgnoreCase)) &&
+                    (string.IsNullOrWhiteSpace(to) || flight.To.Equals(to, StringComparison.OrdinalIgnoreCase)) &&
+                    (string.IsNullOrWhiteSpace(day) || flight.Day.Equals(day, StringComparison.OrdinalIgnoreCase)))
+                {
+                    flightsFound.Add($"{flight.FlightCode}, {flight.Airline}, {flight.From} to {flight.To}, {flight.Day}, {flight.Time}, {flight.Price}");
+                }
+            }
+        }
+    }
 }

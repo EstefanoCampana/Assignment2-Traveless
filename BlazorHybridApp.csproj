@@ -61,7 +61,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <MauiAsset Include="Res\flights.csv" />
+      <AndroidResource Remove="Res\**" />
+      <Compile Remove="Res\**" />
+      <Content Remove="Res\**" />
+      <EmbeddedResource Remove="Res\**" />
+      <MauiXaml Remove="Res\**" />
+      <None Remove="Res\**" />
     </ItemGroup>
 
     <ItemGroup>

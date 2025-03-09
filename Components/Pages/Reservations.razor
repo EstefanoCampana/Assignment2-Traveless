@@ -47,14 +47,16 @@
 </div>
 @code{
 	Reservation reservation = new Reservation();
-	List<Reservation> result = ReservationManager.FindReservations();
+	List<Reservation> result = ReservationManager.PopulatedReservations();
+
 	string errorMessage = String.Empty;
-	string findRcode = "";
-	string findAname = "";
-	string findCname = "";
+	string findRcode = String.Empty;
+	string findAname = String.Empty;
+	string findCname = String.Empty;
+
 	private void Update()
 	{
-		List<Reservation> updateList = ReservationManager.FindReservations();
+		List<Reservation> updateList = ReservationManager.PopulatedReservations();
 		reservation = updateList[1];
 		try
 		{
@@ -78,23 +80,27 @@
 
 	private async Task ReservationFinder()
 	{
-		ReservationManager.FindReservations();
-		result = ReservationManager.SearchReservation(findRcode, findAname, findCname);
-		string message = "";
+		result = ReservationManager.FindReservation(findRcode, findAname, findCname);
+		string message = String.Empty;
+
+		// If the reutrned list is empty
 		if (result.Count == 0)
 		{
 			message = "No reservation is found";
 		}
+		// If there is only one returned list object
 		else if (result.Count == 1)
 		{
 			message = $"{result.Count} reservation is found";
 		}
+		// If there are more than one returned objects
 		else
 		{
 			message = $"{result.Count} reservations are found";
 		}
-		await App.Current.MainPage.DisplayAlert("Success", $"{message}", "OK");
-		ClearFields();
+
+		await App.Current.MainPage.DisplayAlert("Success", $"{message}", "OK"); // Display the indicated message
+		ClearFields();  // Clear the fields for the next input
 	}
 
 	private void ClearFields()

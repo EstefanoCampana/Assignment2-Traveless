@@ -1,4 +1,6 @@
 ﻿@page "/flights"
+@using BlazorHybridApp.Data
+
 <h3 class="text-center">Flight Finder</h3>
 <div class="d-flex gap-2">
     <div class="d-flex flex-column w-100">
@@ -44,7 +46,7 @@
 <form>
     <div>
         <label>Flight Code:</label>
-        <input id=" flight" type="text" class="form-control" placeholder="Flight">
+        <input id="flight" type="text" class="form-control" placeholder="Flight">
     </div>
     <div>
         <label>Airline:</label>
@@ -71,7 +73,7 @@
         <input id="citizenship" type="text" class="form-control" placeholder="Citizenship">
     </div>
     <br />
-    <button class="btn btn-primary">Reserve</button> 
+    <button @onclick=ReserveFlight class="btn btn-primary">Reserve</button>
 </form>
 
 @code {
@@ -79,7 +81,7 @@
     public string flight;
     public string airline;
     public string time;
-    public string cost;
+    public string price;
     public string name;
     public string citizenship;
     public string from;
@@ -136,4 +138,21 @@
             }
         }
     }
+
+    private double cost;
+
+    private void ReserveFlight()
+    {
+        // Generate a random 6-digit reservation code
+        Random random = new Random();
+        string reservationCode = random.Next(100000, 999999).ToString();
+
+        // Create a new reservation object
+        Reservation newReservation = new Reservation(reservationCode, flight, airline, cost, name, citizenship, true);
+
+        // Save the reservation
+        ReservationManager.FindReservations().Add(newReservation);
+        ReservationManager.WriteToJson();
+    }
+
 }

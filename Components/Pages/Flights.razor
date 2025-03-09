@@ -90,9 +90,11 @@
 
     private async Task SearchFlights()
     {
+
         var flightManagement = new FlightManagement();
         await flightManagement.SearchFlights(from, to, day);
         flightsFound = flightManagement.FlightsFound;
+
     }
 
     

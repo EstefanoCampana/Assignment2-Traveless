@@ -115,7 +115,7 @@
     {
         flightsFound.Clear();
 
-        var lines = await File.ReadAllLinesAsync("Res/flights.csv");
+        var lines = await File.ReadAllLinesAsync(@"..\..\..\..\Resources\Res\flights.csv");
 
         foreach (var line in lines)
         {

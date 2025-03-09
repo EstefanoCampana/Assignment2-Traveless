@@ -39,7 +39,7 @@ namespace BlazorHybridApp.Data
                     String.IsNullOrWhiteSpace(aname) &&
                     String.IsNullOrWhiteSpace(cname))
                 {
-                    find.Add(res);
+                    find = resList;
                 }
                 else if ((String.IsNullOrWhiteSpace(rcode) || (res.Rcode == rcode)) &&
                     (String.IsNullOrWhiteSpace(aname) || (res.Aname == aname)) &&

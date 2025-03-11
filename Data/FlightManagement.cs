@@ -6,16 +6,18 @@ using System.Threading.Tasks;
 
 namespace BlazorHybridApp.Data
 {
-    public class FlightManagement
+    internal class FlightManagement
     {
-        public List<string> FlightsFound { get; private set;} = new List<string>();
-        public async Task SearchFlights(string from, string to, string day)
+        private static string CSVPath = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\Resources\Res\Flights.csv");
+
+        public static List<Flight> FlightsFound(string from, string to, string day)
         {
-            FlightsFound.Clear();
+            List<Flight> flights = new List<Flight>();
+            var lines = File.ReadAllLines(CSVPath, Encoding.UTF8);
 
             foreach (var line in lines)
             {
-                if (string.IsNullOrWhiteSpace(line)) continue;
+                if (string.IsNullOrWhiteSpace(line)) continue; 
 
                 var flightData = line.Split(',');
 
@@ -27,10 +29,11 @@ namespace BlazorHybridApp.Data
                         (string.IsNullOrWhiteSpace(to) || flight.To.Equals(to, StringComparison.OrdinalIgnoreCase)) &&
                         (string.IsNullOrWhiteSpace(day) || flight.Day.Equals(day, StringComparison.OrdinalIgnoreCase)))
                     {
-                        FlightsFound.Add($"{flight.FlightCode}, {flight.Airline}, {flight.From} to {flight.To}, {flight.Day}, {flight.Time}, {flight.Price}");
+                        flights.Add(flight);
                     }
                 }
             }
+            return flights; 
         }
     }
 }

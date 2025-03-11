@@ -15,18 +15,22 @@ namespace BlazorHybridApp.Data
         public string Day { get; set; }
         public string Time { get; set; }
         public int AvailableSeats { get; set; }
-        public decimal Price { get; set; }
+        public decimal Cost { get; set; }
 
-        public Flight(string[] data)
+        public Flight(string[] flightData)
         {
-            FlightCode = data[0].Trim();
-            Airline = data[1].Trim();
-            From = data[2].Trim();
-            To = data[3].Trim();
-            Day = data[4].Trim();
-            Time = data[5].Trim();
-            AvailableSeats = int.TryParse(data[6].Trim(), out int seats) ? seats : 0;
-            Price = decimal.TryParse(data[7].Trim(), out decimal price) ? price : 0.0m;
+            FlightCode = flightData[0].Trim();
+            Airline = flightData[1].Trim();
+            From = flightData[2].Trim();
+            To = flightData[3].Trim();
+            Day = flightData[4].Trim();
+            Time = flightData[5].Trim();
+            AvailableSeats = int.TryParse(flightData[6].Trim(), out int seats) ? seats : 0;
+            Cost = decimal.TryParse(flightData[7].Trim(), out var cost) ? cost : 0;
+        }
+        public override string ToString()
+        {
+            return $"{FlightCode}, {Airline}, {From} to {To}, {Day} {Time}, Seats: {AvailableSeats}, Price: {Cost}";
         }
     }
 }

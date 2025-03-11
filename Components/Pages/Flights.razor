@@ -1,6 +1,8 @@
 ﻿@page "/flights"
 @using BlazorHybridApp.Data
+
 <h3 class="text-center">Flight Finder</h3>
+
 <div class="d-flex gap-2">
     <div class="d-flex flex-column w-100">
         <label for="from">From:</label>
@@ -21,19 +23,20 @@
 </div> 
 
 <br />
+
 <div>
     <h3 class="text-center">Flights</h3>
     <div class="border rounded">
-        @if (flightsFound == null || !flightsFound.Any())
+        @if (flights == null || !flights.Any())
         {
             <p> Loading...</p>
         }
         else
         {
             <div>
-                @foreach (var flight in flightsFound)
+                @foreach (var flight in flights)
                 {
-                    @flight  
+                    <p> @flight </p>
                 }
             </div>
         }
@@ -41,6 +44,7 @@
 </div>
 
 <br />
+
 <h3 class="text-center">Reserve </h3>
 <form>
     <div>
@@ -76,24 +80,24 @@
 </form>
 
 @code {
-
+    
     public string flight;
     public string airline;
     public string time;
     public string cost;
     public string name;
     public string citizenship;
-    public string from;
-    public string to;
-    public string day;
-    public List<string> flightsFound = new List<string>();
+    private string from;
+    private string to;
+    private string day;
+    private List<Flight> flights;
 
     private async Task SearchFlights()
     {
-
-        var flightManagement = new FlightManagement();
-        await flightManagement.SearchFlights(from, to, day);
-        flightsFound = flightManagement.FlightsFound;
+        if (!string.IsNullOrWhiteSpace(from) && !string.IsNullOrWhiteSpace(to) && !string.IsNullOrWhiteSpace(day))
+        {
+            flights = await Task.Run(() => FlightManagement.FlightsFound(from, to, day));
+        }
 
     }
 

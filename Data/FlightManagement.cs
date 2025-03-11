@@ -13,8 +13,6 @@ namespace BlazorHybridApp.Data
         {
             FlightsFound.Clear();
 
-            var lines = await File.ReadAllLinesAsync("Res/flights.csv");
-
             foreach (var line in lines)
             {
                 if (string.IsNullOrWhiteSpace(line)) continue;

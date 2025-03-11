@@ -77,10 +77,12 @@
 	</div>
 	<div>
 		<label>Status:</label>
-		<input @bind=reservation.Status type="text" class="form-control" placeholder="Status">
+		<select class="form-select" @bind=reservation.Status>
+				<option>Active</option>
+				<option>Inactive</option>
+		</select>
 	</div>
 </form>
-
 <div class="d-flex justify-content-center">
 	<button class="text-center btn btn-primary"@onclick=Update>Update</button>
 </div>
@@ -101,15 +103,9 @@
 		try
 		{
 			if(String.IsNullOrEmpty(reservation.Cname) ||
-				String.IsNullOrEmpty(reservation.Citizenship) ||
-				String.IsNullOrEmpty(reservation.Status))
+				String.IsNullOrEmpty(reservation.Citizenship))
 			{
 				errorMessage = "Please fill all the entries";
-				await App.Current.MainPage.DisplayAlert("Exception", $"{errorMessage}", "OK");
-			}
-			else if(reservation.Status != "Active" || reservation.Status != "Inactive")
-			{
-				errorMessage = "Status can only be set to \"Active\" or \"Inactive\"";
 				await App.Current.MainPage.DisplayAlert("Exception", $"{errorMessage}", "OK");
 			}
 			else{

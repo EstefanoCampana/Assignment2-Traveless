@@ -1,6 +1,105 @@
 ﻿@page "/flights"
-<h3>Flights</h3>
+@using BlazorHybridApp.Data
+
+<h3 class="text-center">Flight Finder</h3>
+
+<div class="d-flex gap-2">
+    <div class="d-flex flex-column w-100">
+        <label for="from">From:</label>
+        <input id="from" @bind="from" placeholder="Any" class="form-control h-100"/>
+    </div>
+    <div class="d-flex flex-column w-100">
+        <label for="to">To:</label>
+        <input id="to" @bind="to" placeholder="Any" class="form-control h-100" />
+    </div>
+    <div class="d-flex flex-column w-100">
+        <label for="day">Day:</label>
+        <input id="day" @bind="day" placeholder="Any" class="form-control h-100"  />
+    </div>
+    <div class="d-flex flex-column w-100">
+        <label>&nbsp;</label> 
+        <button @onclick="SearchFlights" class="btn btn-primary w-100 h-100">Find flights</button>
+    </div>
+</div> 
+
+<br />
+
+<div>
+    <h3 class="text-center">Flights</h3>
+    <div class="border rounded">
+        @if (flights == null || !flights.Any())
+        {
+            <p> Loading...</p>
+        }
+        else
+        {
+            <div>
+                @foreach (var flight in flights)
+                {
+                    <p> @flight </p>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+<br />
+
+<h3 class="text-center">Reserve </h3>
+<form>
+    <div>
+        <label>Flight Code:</label>
+        <input id=" flight" type="text" class="form-control" placeholder="Flight">
+    </div>
+    <div>
+        <label>Airline:</label>
+        <input id ="airline" type="text" class="form-control" placeholder="Airline">
+    </div>
+    <div>
+        <label>Day:</label>
+        <input id="day" type="text" class="form-control" placeholder="Day">
+    </div>
+    <div>
+        <label>Time:</label>
+        <input id="time" type="text" class="form-control" placeholder="Time">
+    </div>
+    <div>
+        <label>Cost:</label>
+        <input id="cost" type="text" class="form-control" value="0">
+    </div>
+    <div>
+        <label>Name:</label>
+        <input id="name" type="text" class="form-control" placeholder="Name">
+    </div>
+    <div>
+        <label>Citizenship:</label>
+        <input id="citizenship" type="text" class="form-control" placeholder="Citizenship">
+    </div>
+    <br />
+    <button class="btn btn-primary">Reserve</button> 
+</form>
 
 @code {
+    
+    public string flight;
+    public string airline;
+    public string time;
+    public string cost;
+    public string name;
+    public string citizenship;
+    private string from;
+    private string to;
+    private string day;
+    private List<Flight> flights;
 
+    private async Task SearchFlights()
+    {
+        if (!string.IsNullOrWhiteSpace(from) && !string.IsNullOrWhiteSpace(to) && !string.IsNullOrWhiteSpace(day))
+        {
+            flights = await Task.Run(() => FlightManagement.FlightsFound(from, to, day));
+        }
+
+    }
+
+    
 }

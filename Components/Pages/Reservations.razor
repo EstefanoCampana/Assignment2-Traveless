@@ -4,14 +4,22 @@
 <h1 class="text-center">Reservations Finder</h1>
 <div class="d-flex justify-content-between">
 	<h3>Code</h3>
-	<input placeholder="Any" />
+	<input placeholder="Any" @bind=findRcode/>
 	<h3>Airline</h3>
-	<input placeholder="Any" />
+	<input placeholder="Any" @bind=findAname/>
 	<h3>Name</h3>
-	<input placeholder="Any" />
-	<button onclick="FindReservations">Find Reservations...</button>
+	<input placeholder="Any" @bind=findCname/>
+	<button @onclick=ReservationFinder>Find Reservations...</button>
 </div>
-<h1 class="text-center">Reservations</h1>
+<div class="form-group">
+	<h1 class="text-center">Reservations</h1>
+	<select class="form-select">
+		@foreach (Reservation res in result)
+		{
+			<option value=@res>@res</option>
+		}
+	</select>
+</div>
 <div class="d-flex justify-content-center">
 	<p></p>
 </div>
@@ -39,10 +47,15 @@
 </div>
 @code{
 	Reservation reservation = new Reservation();
+	List<Reservation> result = ReservationManager.PopulatedReservations();
+
 	string errorMessage = String.Empty;
+	string findRcode = String.Empty;
+	string findAname = String.Empty;
+	string findCname = String.Empty;
+
 	private void Update()
 	{
-		List<Reservation> updateList = ReservationManager.FindReservations();
 		reservation = updateList[1];
 		try
 		{
@@ -62,5 +75,37 @@
 		{
 			errorMessage = ex.Message;
 		}
+	}
+
+	private async Task ReservationFinder()
+	{
+		result = ReservationManager.FindReservation(findRcode, findAname, findCname);
+		string message = String.Empty;
+
+		// If the reutrned list is empty
+		if (result.Count == 0)
+		{
+			message = "No reservation is found";
+		}
+		// If there is only one returned list object
+		else if (result.Count == 1)
+		{
+			message = $"{result.Count} reservation is found";
+		}
+		// If there are more than one returned objects
+		else
+		{
+			message = $"{result.Count} reservations are found";
+		}
+
+		await App.Current.MainPage.DisplayAlert("Success", $"{message}", "OK"); // Display the indicated message
+		ClearFields();  // Clear the fields for the next input
+	}
+
+	private void ClearFields()
+	{
+		findRcode = "";
+		findAname = "";
+		findCname = "";
 	}
 }

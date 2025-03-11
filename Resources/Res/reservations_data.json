@@ -1,1 +1,47 @@
-[{"Rcode":"D928","Fcode":"F-727","Aname":"Amongus","Cost":99.99,"Cname":"Liam","Citizenship":"English","Status":"Active"},{"Rcode":"R298","Fcode":"K-098","Aname":"ErisAir","Cost":10.99,"Cname":"Henry","Citizenship":"Romanian","Status":"Inactive"},{"Rcode":"T392","Fcode":"H-999","Aname":"MangosGreek","Cost":300.99,"Cname":"Laser","Citizenship":"Greek","Status":"Active"},{"Rcode":"T121","Fcode":"T-727","Aname":"SkibidiTap","Cost":20.99,"Cname":"Dekub","Citizenship":"Polish","Status":"Inactive"}]
+[
+    {
+        "Rcode": "D928",
+        "Fcode": "F-727",
+        "Aname": "Amongus",
+        "Cost": 99.99,
+        "Cname": "Liam",
+        "Citizenship": "English",
+        "Status": "Active"
+    },
+    {
+        "Rcode": "D882",
+        "Fcode": "F-727",
+        "Aname": "Amongus",
+        "Cost": 99.99,
+        "Cname": "Henry",
+        "Citizenship": "English",
+        "Status": "Active"
+    },
+    {
+        "Rcode": "R298",
+        "Fcode": "K-098",
+        "Aname": "ErisAir",
+        "Cost": 10.99,
+        "Cname": "Henry",
+        "Citizenship": "Romanian",
+        "Status": "Inactive"
+    },
+    {
+        "Rcode": "T392",
+        "Fcode": "H-999",
+        "Aname": "MangosGreek",
+        "Cost": 300.99,
+        "Cname": "Laser",
+        "Citizenship": "Greek",
+        "Status": "Active"
+    },
+    {
+        "Rcode": "T121",
+        "Fcode": "T-727",
+        "Aname": "SkibidiTap",
+        "Cost": 20.99,
+        "Cname": "Dekub",
+        "Citizenship": "Polish",
+        "Status": "Inactive"
+    }
+]

@@ -17,14 +17,18 @@
 	</div>
 	<div class="d-flex flex-column w-100">
 		<label>&nbsp;</label>
-		<button @onclick=ReservationFinder @onfocus=isOnFocus class="btn btn-primary w-100 h-100">Find Reservations</button>
+		<button @onclick=ReservationFinder class="btn btn-primary w-100 h-100">Find Reservations</button>
 	</div>
 </div>
 <div class="form-group">
 	<h1 class="text-center">Reservations</h1>
 	@if (!isOnFocused)
 	{
-		<input disabled class="form-control h-100" placeholder="Loading...">
+		<input disabled class="form-control h-100" placeholder="Loading..."/>
+	}
+	else if(result.Count == 0)
+	{
+		<input disabled class="form-control h-100" placeholder="No Reservation"/>
 	}
 	else
 	{
@@ -95,20 +99,16 @@
 		}
 	}
 
-	private void isOnFocus()
-	{
-		isOnFocused = true;
-	}
-
 	private async Task ReservationFinder()
 	{
+		isOnFocused = true;
 		result = ReservationManager.FindReservation(findRcode, findAname, findCname);
 		string message = String.Empty;
 
 		// If the reutrned list is empty
 		if (result.Count == 0)
 		{
-			message = "No reservation is found";
+			message = "No reservation is found. Please search again";
 		}
 		// If there is only one returned list object
 		else if (result.Count == 1)

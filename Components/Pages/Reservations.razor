@@ -2,23 +2,39 @@
 @using BlazorHybridApp.Data
 
 <h1 class="text-center">Reservations Finder</h1>
-<div class="d-flex justify-content-between">
-	<h3>Code</h3>
-	<input placeholder="Any" @bind=findRcode/>
-	<h3>Airline</h3>
-	<input placeholder="Any" @bind=findAname/>
-	<h3>Name</h3>
-	<input placeholder="Any" @bind=findCname/>
-	<button @onclick=ReservationFinder>Find Reservations...</button>
+<div class="d-flex gap-2">
+	<div class="d-flex flex-column w-100">
+		<label for="from">Code:</label>
+		<input placeholder="Any" @bind=findRcode class="form-control h-100"/>
+	</div>
+	<div class="d-flex flex-column w-100">
+		<label for="from">Airline:</label>
+		<input placeholder="Any" @bind=findAname class="form-control h-100"/>
+	</div>
+	<div class="d-flex flex-column w-100">
+		<label for="from">Name:</label>
+		<input placeholder="Any" @bind=findCname class="form-control h-100"/>
+	</div>
+	<div class="d-flex flex-column w-100">
+		<label>&nbsp;</label>
+		<button @onclick=ReservationFinder @onfocus=isOnFocus class="btn btn-primary w-100 h-100">Find Reservations</button>
+	</div>
 </div>
 <div class="form-group">
 	<h1 class="text-center">Reservations</h1>
-	<select class="form-select">
-		@foreach (Reservation res in result)
-		{
-			<option value=@res>@res</option>
-		}
-	</select>
+	@if (!isOnFocused)
+	{
+		<input disabled class="form-control h-100" placeholder="Loading...">
+	}
+	else
+	{
+		<select class="form-select">
+			@foreach (Reservation res in result)
+			{
+				<option value=@res>@res</option>
+			}
+		</select>
+	}
 </div>
 <div class="d-flex justify-content-center">
 	<p></p>
@@ -47,12 +63,13 @@
 </div>
 @code{
 	Reservation reservation = new Reservation();
-	List<Reservation> result = ReservationManager.PopulatedReservations();
+	List<Reservation>result = ReservationManager.PopulatedReservations();
 
 	string errorMessage = String.Empty;
 	string findRcode = String.Empty;
 	string findAname = String.Empty;
 	string findCname = String.Empty;
+	bool isOnFocused = false;
 
 	private void Update()
 	{
@@ -76,6 +93,11 @@
 		{
 			errorMessage = ex.Message;
 		}
+	}
+
+	private void isOnFocus()
+	{
+		isOnFocused = true;
 	}
 
 	private async Task ReservationFinder()

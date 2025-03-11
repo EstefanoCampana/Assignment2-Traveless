@@ -1,100 +1,150 @@
 ﻿@page "/reservations"
 @using BlazorHybridApp.Data
 
-<h1 class="text-center">Reservations Finder</h1>
-<div class="d-flex justify-content-between">
-	<h3>Code</h3>
-	<input placeholder="Any" @bind=findRcode/>
-	<h3>Airline</h3>
-	<input placeholder="Any" @bind=findAname/>
-	<h3>Name</h3>
-	<input placeholder="Any" @bind=findCname/>
-	<button @onclick=ReservationFinder>Find Reservations...</button>
+<h3 class="text-center">Reservations Finder</h3>
+<div class="d-flex gap-2">
+	<div class="d-flex flex-column w-100">
+		<label for="from">Code:</label>
+		<input placeholder="Any" @bind=findRcode class="form-control h-100"/>
+	</div>
+	<div class="d-flex flex-column w-100">
+		<label for="from">Airline:</label>
+		<input placeholder="Any" @bind=findAname class="form-control h-100"/>
+	</div>
+	<div class="d-flex flex-column w-100">
+		<label for="from">Name:</label>
+		<input placeholder="Any" @bind=findCname class="form-control h-100"/>
+	</div>
+	<div class="d-flex flex-column w-100">
+		<label>&nbsp;</label>
+		<button @onclick=ReservationFinder class="btn btn-primary w-100 h-100">Find Reservations</button>
+	</div>
 </div>
+
+<br/>
+
 <div class="form-group">
-	<h1 class="text-center">Reservations</h1>
-	<select class="form-select">
-		@foreach (Reservation res in result)
-		{
-			<option value=@res>@res</option>
-		}
-	</select>
-</div>
-<div class="d-flex justify-content-center">
-	<p></p>
-</div>
-
-<h1 class="text-center">Reserve</h1>
-<div class="d-block">
-	<h3>Reservation Code</h3>
-	<input disabled placeholder="Reservation Code" @bind=reservation.Rcode/>
-	<h3>Flight Code</h3>
-	<input disabled placeholder="Flight Code" @bind=reservation.Fcode/>
-	<h3>Airline</h3>
-	<input disabled placeholder="Airline" @bind=reservation.Aname/>
-	<h3>Cost</h3>
-	<input disabled placeholder="Cost" @bind=reservation.Cost/>
-	<h3>Name</h3>
-	<input placeholder="Name" @bind=reservation.Cname/>
-	<h3>Citizenship</h3>
-	<input placeholder="Citizenship" @bind=reservation.Citizenship/>
-	<h3>Status</h3>
-	<input placeholder="Status" @bind=reservation.Status/>
+	<h3 class="text-center">Reservations</h3>
+	@if (!isOnFocused)
+	{
+		<input disabled class="form-control h-100" placeholder="Loading..."/>
+	}
+	else if(result.Count == 0)
+	{
+		<input disabled class="form-control h-100" placeholder="No Reservation"/>
+	}
+	else
+	{
+		<select class="form-select">
+			
+			@foreach(Reservation res in result)
+			{
+				<option value=@res>@res</option>
+				int ind = result.IndexOf(res);
+				reservation = result[ind];
+			}
+		</select>
+	}
 </div>
 
+<br/>
+
+<h3 class="text-center">Reservation</h3>
+<form>
+	<div>
+		<label>Reservation Code:</label>
+		<input @bind=reservation.Rcode disabled type="text" class="form-control" placeholder="Reservation Code">
+	</div>
+	<div>
+		<label>Flight Code:</label>
+		<input @bind=reservation.Fcode disabled type="text" class="form-control" placeholder="Flight Code">
+	</div>
+	<div>
+		<label>Airline:</label>
+		<input @bind=reservation.Aname disabled type="text" class="form-control" placeholder="Airline">
+	</div>
+	<div>
+		<label>Cost:</label>
+		<input @bind=reservation.Cost disabled type="text" class="form-control" placeholder="Cost">
+	</div>
+	<div>
+		<label>Name:</label>
+		<input @bind=reservation.Cname type="text" class="form-control" placeholder="Name">
+	</div>
+	<div>
+		<label>Citizenship:</label>
+		<input @bind=reservation.Citizenship type="text" class="form-control" placeholder="Citizenship">
+	</div>
+	<div>
+		<label>Status:</label>
+		<select class="form-select" @bind=reservation.Status>
+				<option>Active</option>
+				<option>Inactive</option>
+		</select>
+	</div>
+</form>
 <div class="d-flex justify-content-center">
-	<button class="text-center"@onclick=Update>Update</button>
+	<button class="text-center btn btn-primary"@onclick=Update>Update</button>
 </div>
 @code{
 	Reservation reservation = new Reservation();
-	List<Reservation> result = ReservationManager.FindReservations();
+	List<Reservation>result = ReservationManager.PopulatedReservations();
+
 	string errorMessage = String.Empty;
-	string findRcode = "";
-	string findAname = "";
-	string findCname = "";
-	private void Update()
-	{
-		List<Reservation> updateList = ReservationManager.FindReservations();
-		reservation = updateList[1];
+	string findRcode = String.Empty;
+	string findAname = String.Empty;
+	string findCname = String.Empty;
+	bool isOnFocused = false;
+
+	private async Task Update()
+	{	
+		string path = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\Resources\Res\reservations_data.json");
+		string message = $"File has been succesfully saved to:/n{path}";
 		try
 		{
 			if(String.IsNullOrEmpty(reservation.Cname) ||
-				String.IsNullOrEmpty(reservation.Citizenship) ||
-				String.IsNullOrEmpty(reservation.Status))
+				String.IsNullOrEmpty(reservation.Citizenship))
 			{
 				errorMessage = "Please fill all the entries";
+				await App.Current.MainPage.DisplayAlert("Exception", $"{errorMessage}", "OK");
 			}
-			else
-			{
+			else{
 				errorMessage = String.Empty;
 				ReservationManager.WriteToJson();
+				await App.Current.MainPage.DisplayAlert("Success", $"{message}", "OK");
 			}
 		}
 		catch (FormatException ex)
 		{
 			errorMessage = ex.Message;
+			await App.Current.MainPage.DisplayAlert("Format Exception", $"{errorMessage}", "OK");
 		}
 	}
 
 	private async Task ReservationFinder()
 	{
-		ReservationManager.FindReservations();
-		result = ReservationManager.SearchReservation(findRcode, findAname, findCname);
-		string message = "";
+		isOnFocused = true;
+		result = ReservationManager.FindReservation(findRcode, findAname, findCname);
+		string message = String.Empty;
+
+		// If the reutrned list is empty
 		if (result.Count == 0)
 		{
-			message = "No reservation is found";
+			message = "No reservation is found. Please search again";
 		}
+		// If there is only one returned list object
 		else if (result.Count == 1)
 		{
 			message = $"{result.Count} reservation is found";
 		}
+		// If there are more than one returned objects
 		else
 		{
 			message = $"{result.Count} reservations are found";
 		}
-		await App.Current.MainPage.DisplayAlert("Success", $"{message}", "OK");
-		ClearFields();
+
+		await App.Current.MainPage.DisplayAlert("Success", $"{message}", "OK"); // Display the indicated message
+		ClearFields();  // Clear the fields for the next input
 	}
 
 	private void ClearFields()
@@ -103,4 +153,5 @@
 		findAname = "";
 		findCname = "";
 	}
+
 }

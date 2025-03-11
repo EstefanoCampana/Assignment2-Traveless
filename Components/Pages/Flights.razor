@@ -2,6 +2,7 @@
 @using BlazorHybridApp.Data
 
 <h3 class="text-center">Flight Finder</h3>
+
 <div class="d-flex gap-2">
     <div class="d-flex flex-column w-100">
         <label for="from">From:</label>
@@ -22,19 +23,20 @@
 </div> 
 
 <br />
+
 <div>
     <h3 class="text-center">Flights</h3>
     <div class="border rounded">
-        @if (flightsFound == null || !flightsFound.Any())
+        @if (flights == null || !flights.Any())
         {
             <p> Loading...</p>
         }
         else
         {
             <div>
-                @foreach (var flight in flightsFound)
+                @foreach (var flight in flights)
                 {
-                    @flight  
+                    <p> @flight </p>
                 }
             </div>
         }
@@ -42,6 +44,7 @@
 </div>
 
 <br />
+
 <h3 class="text-center">Reserve </h3>
 <form>
     <div>
@@ -77,82 +80,26 @@
 </form>
 
 @code {
-
+    
     public string flight;
     public string airline;
     public string time;
     public string price;
     public string name;
     public string citizenship;
-    public string from;
-    public string to;
-    public string day;
-    public List<string> flightsFound = new List<string>();
-
-    public class Flight
-    {
-        public string FlightCode { get; set; }
-        public string Airline { get; set; }
-        public string From { get; set; }
-        public string To { get; set; }
-        public string Day { get; set; }
-        public string Time { get; set; }
-        public string AvailableSeats { get; set; }
-        public string Price { get; set; }
-
-        public Flight(string[] data)
-        {
-            FlightCode = data[0].Trim();
-            Airline = data[1].Trim();
-            From = data[2].Trim();
-            To = data[3].Trim();
-            Day = data[4].Trim();
-            Time = data[5].Trim();
-            AvailableSeats = data[6].Trim();
-            Price = data[7].Trim();
-        }
-    }
+    private string from;
+    private string to;
+    private string day;
+    private List<Flight> flights;
 
     private async Task SearchFlights()
     {
-        flightsFound.Clear();
-
-        var lines = await File.ReadAllLinesAsync(@"..\..\..\..\Resources\Res\flights.csv");
-
-        foreach (var line in lines)
+        if (!string.IsNullOrWhiteSpace(from) && !string.IsNullOrWhiteSpace(to) && !string.IsNullOrWhiteSpace(day))
         {
-            if (string.IsNullOrWhiteSpace(line)) continue; 
-
-            var flightData = line.Split(',');
-
-            if (flightData.Length == 8)
-            {
-                var flight = new Flight(flightData);
-
-                if ((string.IsNullOrWhiteSpace(from) || flight.From.Equals(from, StringComparison.OrdinalIgnoreCase)) &&
-                    (string.IsNullOrWhiteSpace(to) || flight.To.Equals(to, StringComparison.OrdinalIgnoreCase)) &&
-                    (string.IsNullOrWhiteSpace(day) || flight.Day.Equals(day, StringComparison.OrdinalIgnoreCase)))
-                {
-                    flightsFound.Add($"{flight.FlightCode}, {flight.Airline}, {flight.From} to {flight.To}, {flight.Day}, {flight.Time}, {flight.Price}");
-                }
-            }
+            flights = await Task.Run(() => FlightManagement.FlightsFound(from, to, day));
         }
+
     }
 
-    private double cost;
-
-    private void ReserveFlight()
-    {
-        // Generate a random 6-digit reservation code
-        Random random = new Random();
-        string reservationCode = random.Next(100000, 999999).ToString();
-
-        // Create a new reservation object
-        Reservation newReservation = new Reservation(reservationCode, flight, airline, cost, name, citizenship, true);
-
-        // Save the reservation
-        ReservationManager.FindReservations().Add(newReservation);
-        ReservationManager.WriteToJson();
-    }
-
+    
 }

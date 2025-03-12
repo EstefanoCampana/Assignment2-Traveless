@@ -90,6 +90,7 @@
     private string from;
     private string to;
     private string day;
+    private double cost;
     private List<Flight> flights;
 
     private async Task SearchFlights()
@@ -100,6 +101,22 @@
         }
 
     }
+
+    private void ReserveFlight()
+    {
+        // Generate a random 6-digit reservation code
+        Random random = new Random();
+        string reservationCode = random.Next(100000, 999999).ToString();
+
+        // Create a new reservation object
+        Reservation newReservation = new Reservation(reservationCode, flight, airline, cost, name, citizenship, true);
+
+        // Save the reservation
+        ReservationManager.FindReservations().Add(newReservation);
+        ReservationManager.WriteToJson();
+    }
+
+}
 
     
 }

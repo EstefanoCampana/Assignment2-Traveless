@@ -35,15 +35,12 @@
 	}
 	else
 	{
-		<select class="form-select">
-			
-			@foreach(Reservation res in result)
-			{
-				<option value=@res>@res</option>
-				int ind = result.IndexOf(res);
-				reservation = result[ind];
-			}
-		</select>
+		<InputSelect class="form-select" @bind-Value:get="selected" @bind-Value:set="SetSelected">
+				@foreach(Reservation res in result)
+				{
+					<option value=@res.Rcode>@res</option>
+				}
+		</InputSelect>
 	}
 </div>
 
@@ -78,23 +75,37 @@
 	<div>
 		<label>Status:</label>
 		<select class="form-select" @bind=reservation.Status>
-				<option>Active</option>
-				<option>Inactive</option>
+			<option>Active</option>
+			<option>Inactive</option>
 		</select>
 	</div>
 </form>
+
+<br/>
+
 <div class="d-flex justify-content-center">
 	<button class="text-center btn btn-primary"@onclick=Update>Update</button>
 </div>
 @code{
-	Reservation reservation = new Reservation();
-	List<Reservation>result = ReservationManager.PopulatedReservations();
+	List<Reservation> result = ReservationManager.PopulatedReservations();
+	Reservation reservation { get; set; } = new Reservation();
 
+	string selected = null!;
 	string errorMessage = String.Empty;
 	string findRcode = String.Empty;
 	string findAname = String.Empty;
 	string findCname = String.Empty;
 	bool isOnFocused = false;
+
+	void SetSelected(string value)
+	{
+		var res = result.Find(e => e.Rcode == value);
+		if (res != null)
+		{
+			reservation = res;
+		}
+		selected = value;
+	}
 
 	private async Task Update()
 	{	
@@ -145,6 +156,8 @@
 
 		await App.Current.MainPage.DisplayAlert("Success", $"{message}", "OK"); // Display the indicated message
 		ClearFields();  // Clear the fields for the next input
+		
+
 	}
 
 	private void ClearFields()

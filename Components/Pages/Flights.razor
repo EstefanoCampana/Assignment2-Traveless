@@ -80,7 +80,7 @@
 </form>
 
 @code {
-    
+
     public string flight;
     public string airline;
     public string time;
@@ -102,19 +102,34 @@
 
     }
 
-    private void ReserveFlight()
+    private string GenerateRandomRCode()
     {
-        // Generate a random 6-digit reservation code
-        Random random = new Random();
-        string reservationCode = random.Next(100000, 999999).ToString();
+        Random rand = new Random();
+        char letter = (char)rand.Next('A', 'Z' + 1); // Generate a random uppercase letter
+        int number = rand.Next(100, 1000); // Generate a three-digit number
+        return $"{letter}{number}";
+    }
 
-        // Create a new reservation object
-        Reservation newReservation = new Reservation(reservationCode, flight, airline, cost, name, citizenship, true);
+    private async Task ReserveFlight()
+    {
+        string rcode = GenerateRandomRCode();
 
-        // Save the reservation
-        ReservationManager.FindReservations().Add(newReservation);
+        var newReservation = new Reservation
+            {
+                Rcode = rcode,
+                Fcode = flight,
+                Aname = airline,
+                Cost = cost,
+                Cname = name,
+                Citizenship = citizenship,
+                Status = "Reserved"
+            };
+
+        // Add to reservation list and update JSON
+        ReservationManager.PopulatedReservations().Add(newReservation);
         ReservationManager.WriteToJson();
     }
+}
 
 }
 

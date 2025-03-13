@@ -30,7 +30,7 @@ namespace BlazorHybridApp.Data
         }
         public override string ToString()
         {
-            return $"{FlightCode}, {Airline}, {From} to {To}, {Day} {Time}, Seats: {AvailableSeats}, Price: {Cost}";
+            return $"{FlightCode}, {Airline}, {From}, {To}, {Day}, {Time}, {Cost}";
         }
     }
 }

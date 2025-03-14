@@ -38,9 +38,9 @@ namespace BlazorHybridApp.Data
             int ind = 0;
 
             // If the user doesn't enter any input
-            if (rcode == "Any" &&
-                    aname == "Any" &&
-                    cname == "Any")
+            if (String.IsNullOrWhiteSpace(rcode) &&
+                    String.IsNullOrWhiteSpace(aname) &&
+                    String.IsNullOrWhiteSpace(cname))
             {
                 // all the reservations are displayed in the list
                 matchingReservation = resList;

@@ -6,8 +6,8 @@
 	<div class="d-flex flex-column w-100">
 		<label for="from">Code:</label>
 		<InputSelect class="form-select h-100" placeholder="Any" @bind-Value:get="findRcode">
-			<option value="Any">Any</option>
-			@foreach (Reservation res in result)
+			<option value="" selected>Any</option>
+			@foreach (Reservation res in listedRes)
 			{
 				<option value=@res.Rcode>@res.Rcode</option>
 			}
@@ -16,8 +16,8 @@
 	<div class="d-flex flex-column w-100">
 		<label for="from">Airline:</label>
 		<InputSelect class="form-select h-100" placeholder="Any" @bind-Value:get="findAname">
-			<option value ="Any">Any</option>
-			@foreach (Reservation res in result)
+			<option value="" selected>Any</option>
+			@foreach (Reservation res in listedRes)
 			{
 				<option value=@res.Aname>@res.Aname</option>
 			}
@@ -26,8 +26,8 @@
 	<div class="d-flex flex-column w-100">
 		<label for="from">Name:</label>
 		<InputSelect class="form-select h-100" placeholder="Any" @bind-Value:get="findCname">
-			<option value="Any">Any</option>
-			@foreach (Reservation res in result)
+			<option value="" selected>Any</option>
+			@foreach (Reservation res in listedRes)
 			{
 				<option value=@res.Cname>@res.Cname</option>
 			}
@@ -107,6 +107,7 @@
 @code{
 	List<Reservation> result = ReservationManager.PopulatedReservations();
 	Reservation reservation { get; set; } = new Reservation();
+	List<Reservation> listedRes = ReservationManager.PopulatedReservations();
 
 	string selected = null!;
 	string errorMessage = String.Empty;
@@ -154,15 +155,6 @@
 	{
 		try
 		{
-			if (String.IsNullOrEmpty(findRcode) ||
-				String.IsNullOrEmpty(findAname) ||
-				String.IsNullOrEmpty(findCname))
-			{
-				errorMessage = "Please fill all the entries";
-				await App.Current.MainPage.DisplayAlert("Exception", $"{errorMessage}", "OK");
-			}
-			else
-			{
 				isOnFocused = true;
 				result = ReservationManager.FindReservation(findRcode, findAname, findCname);
 				string message = String.Empty;
@@ -178,7 +170,6 @@
 					message = $"{result.Count} reservation is found";
 					reservation = result[0];    // set the default fill-in
 				}
-
 				// If there are more than one returned objects
 				else
 				{
@@ -188,7 +179,6 @@
 
 				await App.Current.MainPage.DisplayAlert("Success", $"{message}", "OK"); // Display the indicated message
 				ClearFields();  // Clear the fields for the next input
-			}
 		}
 		catch (FormatException ex)
 		{

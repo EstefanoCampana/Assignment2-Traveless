@@ -142,16 +142,19 @@
 		if (result.Count == 0)
 		{
 			message = "No reservation is found. Please search again";
+			reservation = new Reservation();    // clear the fill-in if any
 		}
 		// If there is only one returned list object
 		else if (result.Count == 1)
 		{
 			message = $"{result.Count} reservation is found";
+			reservation = result[0];    // set the default fill-in
 		}
 		// If there are more than one returned objects
 		else
 		{
 			message = $"{result.Count} reservations are found";
+			reservation = result[0];    // set the default fill-in
 		}
 
 		await App.Current.MainPage.DisplayAlert("Success", $"{message}", "OK"); // Display the indicated message

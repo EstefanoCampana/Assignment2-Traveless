@@ -5,15 +5,33 @@
 <div class="d-flex gap-2">
 	<div class="d-flex flex-column w-100">
 		<label for="from">Code:</label>
-		<input placeholder="Any" @bind=findRcode class="form-control h-100"/>
+		<InputSelect class="form-select h-100" placeholder="Any" @bind-Value:get="findRcode">
+			<option value="Any">Any</option>
+			@foreach (Reservation res in result)
+			{
+				<option value=@res.Rcode>@res.Rcode</option>
+			}
+		</InputSelect>
 	</div>
 	<div class="d-flex flex-column w-100">
 		<label for="from">Airline:</label>
-		<input placeholder="Any" @bind=findAname class="form-control h-100"/>
+		<InputSelect class="form-select h-100" placeholder="Any" @bind-Value:get="findAname">
+			<option value ="Any">Any</option>
+			@foreach (Reservation res in result)
+			{
+				<option value=@res.Aname>@res.Aname</option>
+			}
+		</InputSelect>
 	</div>
 	<div class="d-flex flex-column w-100">
 		<label for="from">Name:</label>
-		<input placeholder="Any" @bind=findCname class="form-control h-100"/>
+		<InputSelect class="form-select h-100" placeholder="Any" @bind-Value:get="findCname">
+			<option value="Any">Any</option>
+			@foreach (Reservation res in result)
+			{
+				<option value=@res.Cname>@res.Cname</option>
+			}
+		</InputSelect>
 	</div>
 	<div class="d-flex flex-column w-100">
 		<label>&nbsp;</label>
@@ -36,10 +54,10 @@
 	else
 	{
 		<InputSelect class="form-select" @bind-Value:get="selected" @bind-Value:set="SetSelected">
-				@foreach(Reservation res in result)
-				{
-					<option value=@res.Rcode>@res</option>
-				}
+			@foreach(Reservation res in result)
+			{
+				<option value=@res.Rcode>@res</option>
+			}
 		</InputSelect>
 	}
 </div>
@@ -134,33 +152,50 @@
 
 	private async Task ReservationFinder()
 	{
-		isOnFocused = true;
-		result = ReservationManager.FindReservation(findRcode, findAname, findCname);
-		string message = String.Empty;
+		try
+		{
+			if (String.IsNullOrEmpty(findRcode) ||
+				String.IsNullOrEmpty(findAname) ||
+				String.IsNullOrEmpty(findCname))
+			{
+				errorMessage = "Please fill all the entries";
+				await App.Current.MainPage.DisplayAlert("Exception", $"{errorMessage}", "OK");
+			}
+			else
+			{
+				isOnFocused = true;
+				result = ReservationManager.FindReservation(findRcode, findAname, findCname);
+				string message = String.Empty;
+				// If the reutrned list is empty
+				if (result.Count == 0)
+				{
+					message = "No reservation is found. Please search again";
+					reservation = new Reservation();    // clear the fill-in if any
+				}
+				// If there is only one returned list object
+				else if (result.Count == 1)
+				{
+					message = $"{result.Count} reservation is found";
+					reservation = result[0];    // set the default fill-in
+				}
 
-		// If the reutrned list is empty
-		if (result.Count == 0)
-		{
-			message = "No reservation is found. Please search again";
-			reservation = new Reservation();    // clear the fill-in if any
-		}
-		// If there is only one returned list object
-		else if (result.Count == 1)
-		{
-			message = $"{result.Count} reservation is found";
-			reservation = result[0];    // set the default fill-in
-		}
-		// If there are more than one returned objects
-		else
-		{
-			message = $"{result.Count} reservations are found";
-			reservation = result[0];    // set the default fill-in
-		}
+				// If there are more than one returned objects
+				else
+				{
+					message = $"{result.Count} reservations are found";
+					reservation = result[0];    // set the default fill-in
+				}
 
-		await App.Current.MainPage.DisplayAlert("Success", $"{message}", "OK"); // Display the indicated message
-		ClearFields();  // Clear the fields for the next input
+				await App.Current.MainPage.DisplayAlert("Success", $"{message}", "OK"); // Display the indicated message
+				ClearFields();  // Clear the fields for the next input
+			}
+		}
+		catch (FormatException ex)
+		{
+			errorMessage = ex.Message;
+			await App.Current.MainPage.DisplayAlert("Format Exception", $"{errorMessage}", "OK");
+		}
 		
-
 	}
 
 	private void ClearFields()

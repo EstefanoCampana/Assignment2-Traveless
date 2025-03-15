@@ -4,7 +4,7 @@
 <h3 class="text-center">Reservations Finder</h3>
 <div class="d-flex gap-2">
 	<div class="d-flex flex-column w-100">
-		<label for="from">Code:</label>
+		<label>Code:</label>
 		<InputSelect class="form-select h-100" placeholder="Any" @bind-Value:get="findRcode">
 			<option value="" selected>Any</option>
 			@foreach (Reservation res in listedRes)
@@ -14,7 +14,7 @@
 		</InputSelect>
 	</div>
 	<div class="d-flex flex-column w-100">
-		<label for="from">Airline:</label>
+		<label>Airline:</label>
 		<InputSelect class="form-select h-100" placeholder="Any" @bind-Value:get="findAname">
 			<option value="" selected>Any</option>
 			@foreach (Reservation res in listedRes)
@@ -24,7 +24,7 @@
 		</InputSelect>
 	</div>
 	<div class="d-flex flex-column w-100">
-		<label for="from">Name:</label>
+		<label>Name:</label>
 		<InputSelect class="form-select h-100" placeholder="Any" @bind-Value:get="findCname">
 			<option value="" selected>Any</option>
 			@foreach (Reservation res in listedRes)
@@ -153,38 +153,31 @@
 
 	private async Task ReservationFinder()
 	{
-		try
-		{
-				isOnFocused = true;
-				result = ReservationManager.FindReservation(findRcode, findAname, findCname);
-				string message = String.Empty;
-				// If the reutrned list is empty
-				if (result.Count == 0)
-				{
-					message = "No reservation is found. Please search again";
-					reservation = new Reservation();    // clear the fill-in if any
-				}
-				// If there is only one returned list object
-				else if (result.Count == 1)
-				{
-					message = $"{result.Count} reservation is found";
-					reservation = result[0];    // set the default fill-in
-				}
-				// If there are more than one returned objects
-				else
-				{
-					message = $"{result.Count} reservations are found";
-					reservation = result[0];    // set the default fill-in
-				}
 
-				await App.Current.MainPage.DisplayAlert("Success", $"{message}", "OK"); // Display the indicated message
-				ClearFields();  // Clear the fields for the next input
-		}
-		catch (FormatException ex)
+		isOnFocused = true;
+		result = ReservationManager.FindReservation(findRcode, findAname, findCname);
+		string message = String.Empty;
+		// If the reutrned list is empty
+		if (result.Count == 0)
 		{
-			errorMessage = ex.Message;
-			await App.Current.MainPage.DisplayAlert("Format Exception", $"{errorMessage}", "OK");
+			message = "No reservation is found. Please search again";
+			reservation = new Reservation();    // clear the fill-in if any
 		}
+		// If there is only one returned list object
+		else if (result.Count == 1)
+		{
+			message = $"{result.Count} reservation is found";
+			reservation = result[0];    // set the default fill-in
+		}
+		// If there are more than one returned objects
+		else
+		{
+			message = $"{result.Count} reservations are found";
+			reservation = result[0];    // set the default fill-in
+		}
+
+		await App.Current.MainPage.DisplayAlert("Success", $"{message}", "OK"); // Display the indicated message
+		ClearFields();  // Clear the fields for the next input
 		
 	}
 

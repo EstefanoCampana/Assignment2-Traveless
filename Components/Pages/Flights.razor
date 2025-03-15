@@ -49,38 +49,44 @@
 <form>
     <div>
         <label>Flight Code:</label>
-        <input id=" flight" type="text" class="form-control" placeholder="Flight">
+        <input @bind=reservation.Fcode type="text" class="form-control" placeholder="Flight Code">
     </div>
     <div>
         <label>Airline:</label>
-        <input id ="airline" type="text" class="form-control" placeholder="Airline">
+        <input @bind="reservation.Aname" type="text" class="form-control" placeholder="Airline">
     </div>
     <div>
         <label>Day:</label>
-        <input id="day" type="text" class="form-control" placeholder="Day">
+        <input @bind="day" type="text" class="form-control" placeholder="Day">
     </div>
     <div>
         <label>Time:</label>
-        <input id="time" type="text" class="form-control" placeholder="Time">
+        <input @bind="time" type="text" class="form-control" placeholder="Time">
     </div>
     <div>
         <label>Cost:</label>
-        <input id="cost" type="text" class="form-control" value="0">
+        <input @bind="reservation.Cost" type="text" class="form-control" placeholder="0">
     </div>
     <div>
         <label>Name:</label>
-        <input id="name" type="text" class="form-control" placeholder="Name">
+        <input @bind="reservation.Cname" type="text" class="form-control" placeholder="Name">
     </div>
     <div>
         <label>Citizenship:</label>
-        <input id="citizenship" type="text" class="form-control" placeholder="Citizenship">
+        <input @bind="reservation.Citizenship" type="text" class="form-control" placeholder="Citizenship">
     </div>
     <br />
-    <button class="btn btn-primary">Reserve</button> 
+    <button @onclick="ReserveFlight" class="btn btn-primary">Reserve</button> 
 </form>
 
 @code {
-    
+
+
+
+
+
+
+
     public string flight;
     public string airline;
     public string time;
@@ -92,6 +98,8 @@
     private string day;
     private List<Flight> flights;
 
+    Reservation reservation { get; set; } = new Reservation();
+
     private async Task SearchFlights()
     {
         if (!string.IsNullOrWhiteSpace(from) && !string.IsNullOrWhiteSpace(to) && !string.IsNullOrWhiteSpace(day))
@@ -101,5 +109,32 @@
 
     }
 
-    
+    private string GenerateRandomRCode()
+    {
+        Random rand = new Random();
+        char letter = (char)rand.Next('A', 'Z' + 1); // Generate a random uppercase letter
+        int number = rand.Next(100, 1000); // Generate a three-digit number
+        return $"{letter}{number}";
+    }
+
+    private async Task ReserveFlight()
+    {
+
+        string rcode = GenerateRandomRCode();
+
+        var newReservation = new Reservation
+            {
+                Rcode = rcode,
+                Fcode = reservation.Fcode,
+                Aname = reservation.Aname,
+                Cost = reservation.Cost,
+                Cname = reservation.Cname,
+                Citizenship = reservation.Citizenship,
+                Status = "Active"
+            };
+
+        // Add to reservation list and update JSON
+        ReservationManager.resList.Add(newReservation);
+
+    }
 }

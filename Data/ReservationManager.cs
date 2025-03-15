@@ -13,8 +13,8 @@ namespace BlazorHybridApp.Data
     internal class ReservationManager
     {
         private static string JSONPATH = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\Resources\Res\reservations_data.json");
-        private static List<Reservation> resList = ReservationManager.PopulatedReservations();
-        
+        public static List<Reservation> resList = ReservationManager.PopulatedReservations();
+
         // Populated with any reservations that are found
         public static List<Reservation> PopulatedReservations()
         {
@@ -66,6 +66,30 @@ namespace BlazorHybridApp.Data
             // return the matched Reservation objects
             return matchingReservation;
         }
+    
+        //Create a Reservation using flight object
+        public static string MakeReservation(Flight flight, string name = "", string citizenship = "")
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentNullException("Name canot be empty.", nameof(name));
+            }
+            else if (string.IsNullOrWhiteSpace(citizenship))
+            {
+                throw new ArgumentNullException("Citizenship cannot be empty.", nameof(citizenship));
+            }
+            else
+            {
+                Random rand = new Random();
+                char letter = (char)rand.Next('A', 'Z' + 1); // Generate a random uppercase letter
+                int number = rand.Next(100, 1000); // Generate a three-digit number
+                string reservationCode = $"{letter}{number}";
+                Reservation newReservation = new Reservation(reservationCode, flight.FlightCode, flight.Airline, (double)flight.Cost, name, citizenship, "Active");
+                resList.Add(newReservation);
+                return reservationCode;
+            }
+        }
+
     }
 }
 

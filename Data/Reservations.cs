@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BlazorHybridApp.Data
 {
-    internal class Reservation
+    public class Reservation
     {
         //Private data
         private string rcode = String.Empty;

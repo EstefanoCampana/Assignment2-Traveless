@@ -13,7 +13,6 @@ namespace BlazorHybridApp.Data
     internal class ReservationManager
     {
         private static string JSONPATH = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\Resources\Res\reservations_data.json");
-        //List used to write all reservation objects in the file.
         public static List<Reservation> resList = new List<Reservation>();
 
         // Populated with any reservations that are found
@@ -22,7 +21,6 @@ namespace BlazorHybridApp.Data
             List<Reservation> reservals = new List<Reservation>();
             var content = File.ReadAllText(JSONPATH);
             var filecontent = JsonSerializer.Deserialize<List<Reservation>>(content);
-            reservals.Clear();
             reservals.AddRange(filecontent);
             return reservals;
         }
@@ -48,7 +46,7 @@ namespace BlazorHybridApp.Data
             }
             else
             {
-                foreach (Reservation res in resList)
+                foreach (Reservation res in ReservationManager.PopulatedReservations())
                 {
                     // If the inputed value(s) is/are matched
                     if ((String.IsNullOrWhiteSpace(rcode) || (res.Rcode == rcode)) &&

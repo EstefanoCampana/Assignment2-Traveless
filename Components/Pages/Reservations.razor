@@ -168,7 +168,6 @@
 		if (result.Count == 0)
 		{
 			message = "No reservation is found. Please search again";
-			reservation = new Reservation();    // clear the fill-in if any
 		}
 		// If there is only one returned list object
 		else if (result.Count == 1)
@@ -184,15 +183,7 @@
 		}
 
 		await App.Current.MainPage.DisplayAlert("Success", $"{message}", "OK"); // Display the indicated message
-		ClearFields();  // Clear the fields for the next input
 		
-	}
-
-	private void ClearFields()
-	{
-		findRcode = "";
-		findAname = "";
-		findCname = "";
 	}
 
 }

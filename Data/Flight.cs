@@ -17,6 +17,8 @@ namespace BlazorHybridApp.Data
         public int AvailableSeats { get; set; }
         public decimal Cost { get; set; }
 
+        public Flight() { }
+
         public Flight(string[] flightData)
         {
             FlightCode = flightData[0].Trim();

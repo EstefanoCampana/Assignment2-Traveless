@@ -66,26 +66,34 @@ namespace BlazorHybridApp.Data
             // return the matched Reservation objects
             return matchingReservation;
         }
-    
+
+        public static string GenerateRandomRCode()
+        {
+            Random rand = new Random();
+            char letter = (char)rand.Next('A', 'Z' + 1); // Generate a random uppercase letter
+            int number = rand.Next(1000, 10000); // Generate a four-digit number
+            return $"{letter}{number}";
+        }
+
         //Create a Reservation using flight object
         public static string MakeReservation(Flight flight, string name = "", string citizenship = "")
         {
-            if (string.IsNullOrWhiteSpace(name))
+            bool isFullyBooked = FlightManagement.IsFullyBook(flight.FlightCode);
+
+            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(citizenship))
             {
-                throw new ArgumentNullException("Name canot be empty.", nameof(name));
+                throw new MakeReservationException(name, citizenship);
             }
-            else if (string.IsNullOrWhiteSpace(citizenship))
+            else if (!isFullyBooked)
             {
-                throw new ArgumentNullException("Citizenship cannot be empty.", nameof(citizenship));
+                throw new MakeReservationException(isFullyBooked);
             }
             else
             {
-                Random rand = new Random();
-                char letter = (char)rand.Next('A', 'Z' + 1); // Generate a random uppercase letter
-                int number = rand.Next(100, 1000); // Generate a three-digit number
-                string reservationCode = $"{letter}{number}";
+                string reservationCode = GenerateRandomRCode();
                 Reservation newReservation = new Reservation(reservationCode, flight.FlightCode, flight.Airline, (double)flight.Cost, name, citizenship, "Active");
                 resList.Add(newReservation);
+                WriteToJson();
                 return reservationCode;
             }
         }

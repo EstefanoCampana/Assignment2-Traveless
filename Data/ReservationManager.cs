@@ -13,6 +13,7 @@ namespace BlazorHybridApp.Data
     internal class ReservationManager
     {
         private static string JSONPATH = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\Resources\Res\reservations_data.json");
+        //List used to write all reservation objects in the file.
         public static List<Reservation> resList = new List<Reservation>();
 
         // Populated with any reservations that are found

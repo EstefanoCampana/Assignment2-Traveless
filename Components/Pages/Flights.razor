@@ -108,13 +108,16 @@
     private string to = String.Empty;
     private string day = String.Empty; 
     string errorMessage = String.Empty;
+    //List containing all flight objects matchig user input.
     List<Flight> flights = FlightManagement.PopulatedFlights();
+    //List containing all flight objects in the system.
     List<Flight> fliList = FlightManagement.PopulatedFlights();
     Flight flight { get; set; } = new Flight();
     Reservation reservation = new Reservation();
 
     void SetSelected(string value)
     {
+    //Code snippet from: https://stackoverflow.com/questions/59176644/how-to-bind-object-to-select-option-in-blazor
         var fli = flights.Find(e => e.FlightCode == value);
         if (fli != null)
         {
@@ -127,6 +130,7 @@
         if (!string.IsNullOrWhiteSpace(from) && !string.IsNullOrWhiteSpace(to) && !string.IsNullOrWhiteSpace(day))
         {
             flights = await Task.Run(() => FlightManagement.FlightsFound(from, to, day));
+            //If the list contains only 1 flight in it.
             if (flights.Count == 1)
             {
                 flight = flights[0];

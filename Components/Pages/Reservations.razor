@@ -105,8 +105,11 @@
 	<button class="text-center btn btn-primary"@onclick=Update>Update</button>
 </div>
 @code{
+	//List containing all reservation objects taht match user input. 
 	List<Reservation> result = ReservationManager.PopulatedReservations();
+	//Reservation object reference
 	Reservation reservation { get; set; } = new Reservation();
+	//List that contains all reservation objects in the system
 	List<Reservation> listedRes = ReservationManager.PopulatedReservations();
 
 	string selected = null!;
@@ -116,6 +119,8 @@
 	string findCname = String.Empty;
 	bool isOnFocused = false;
 
+	//Method to update values automatically after the user selects a found reservation.
+	//Code snippet from: https://stackoverflow.com/questions/59176644/how-to-bind-object-to-select-option-in-blazor
 	void SetSelected(string value)
 	{
 		var res = result.Find(e => e.Rcode == value);
@@ -132,12 +137,14 @@
 		string message = $"File has been succesfully saved to:/n{path}";
 		try
 		{
+			//If the name or citizenship are null.
 			if(String.IsNullOrEmpty(reservation.Cname) ||
 				String.IsNullOrEmpty(reservation.Citizenship))
 			{
 				errorMessage = "Please fill all the entries";
 				await App.Current.MainPage.DisplayAlert("Exception", $"{errorMessage}", "OK");
 			}
+			//Valid data
 			else{
 				errorMessage = String.Empty;
 				ReservationManager.WriteToJson();

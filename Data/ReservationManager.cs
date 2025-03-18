@@ -10,19 +10,17 @@ using System.Threading.Tasks;
 
 namespace BlazorHybridApp.Data
 {
-    internal class ReservationManager
+    public class ReservationManager
     {
         private static string JSONPATH = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\Resources\Res\reservations_data.json");
         public static List<Reservation> resList = new List<Reservation>();
 
         // Populated with any reservations that are found
-        public static List<Reservation> PopulatedReservations()
+        public static void PopulatedReservations()
         {
-            List<Reservation> reservals = new List<Reservation>();
             var content = File.ReadAllText(JSONPATH);
             var filecontent = JsonSerializer.Deserialize<List<Reservation>>(content);
-            reservals.AddRange(filecontent);
-            return reservals;
+            resList.AddRange(filecontent);
         }
         public static void WriteToJson()
         {
@@ -46,7 +44,7 @@ namespace BlazorHybridApp.Data
             }
             else
             {
-                foreach (Reservation res in ReservationManager.PopulatedReservations())
+                foreach (Reservation res in resList)
                 {
                     // If the inputed value(s) is/are matched
                     if ((String.IsNullOrWhiteSpace(rcode) || (res.Rcode == rcode)) &&
